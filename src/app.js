@@ -5,6 +5,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 
 import logger from '#config/logger.js';
+import authRoutes from '#routes/auth.route.js';
 
 const app = express();
 
@@ -14,11 +15,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(
+  morgan('combined', {
+    stream: { write: message => logger.info(message.trim()) },
+  })
+);
 
 app.get('/', (req, res) => {
   logger.info('Received GET request for /');
   res.status(200).send('Hello from RISHII!');
 });
+
+app.get('/health', (req, res) => {
+  logger.info('Received GET request for /health');
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
+app.get('/api', (req, res) => {
+  logger.info('Received GET request for /api');
+  res.status(200).json({ message: 'Welcome to the Acquisitions API' });
+});
+
+app.use('/api/auth', authRoutes);
 
 export default app;
