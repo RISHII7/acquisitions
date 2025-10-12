@@ -76,6 +76,7 @@ export const authenticateUser = async ({ email, password }) => {
     }
 
     logger.info(`User ${existingUser.email} authenticated successfully`);
+    // Small change to test
     return {
       id: existingUser.id,
       name: existingUser.name,
